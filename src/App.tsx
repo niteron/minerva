@@ -1,18 +1,25 @@
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { VoiceChat } from './components/voice-chat/index.tsx';
+import { LogOut } from 'lucide-react';
+
+import { VoiceChat } from '@/components/voice-chat/index.tsx';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const authComponents = {
   Header() {
     return (
-      <div className="text-center py-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Voice Agent
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Nova Sonic voice conversational agent
-        </p>
-      </div>
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="pb-6 text-center">
+          <CardTitle>Voice Agent</CardTitle>
+          <CardDescription>Nova Sonic voice conversational agent</CardDescription>
+        </CardHeader>
+      </Card>
     );
   },
 };
@@ -27,23 +34,22 @@ function App() {
 
 function MainApp({ signOut }: { signOut?: () => void }) {
   return (
-    <div className="h-screen flex flex-col bg-white">
-      <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4">
-        <div className="max-w-3xl mx-auto flex justify-between items-center">
+    <div className="bg-background text-foreground flex min-h-screen flex-col">
+      <header className="border-border border-b">
+        <div className="mx-auto flex max-w-3xl items-start justify-between gap-4 px-4 py-4">
           <div>
-            <h1 className="text-lg md:text-2xl font-bold text-gray-900">Nova — Japanese tutor</h1>
-            <p className="text-xs md:text-sm text-gray-400">Built with AgentCore, Strands, and Amplify</p>
+            <p className="text-lg font-medium">Nova — Japanese tutor</p>
+            <p className="text-muted-foreground text-sm">
+              Built with AgentCore, Strands, and Amplify
+            </p>
           </div>
-          <button
-            onClick={signOut}
-            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 px-3 py-1 rounded-lg transition-colors text-xs"
-          >
+          <Button type="button" variant="ghost" size="sm" onClick={signOut}>
+            <LogOut />
             Sign out
-          </button>
+          </Button>
         </div>
       </header>
-
-      <main className="flex-1 overflow-hidden">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col">
         <VoiceChat />
       </main>
     </div>
