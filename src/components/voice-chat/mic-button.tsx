@@ -1,3 +1,5 @@
+import { Mic, MicOff } from 'lucide-react';
+
 interface MicButtonProps {
   isRecording: boolean;
   isConnected: boolean;
@@ -7,37 +9,29 @@ interface MicButtonProps {
 export function MicButton({ isRecording, isConnected, onToggle }: MicButtonProps) {
   return (
     <div className="relative">
-      {/* Pulse ring while recording */}
       {isRecording && (
-        <div className="absolute inset-0 rounded-full bg-red-400/40 animate-pulse-ring" />
+        <div className="absolute -inset-1 rounded-full bg-emerald-400/25 animate-pulse-ring" />
       )}
       <button
+        type="button"
         onClick={onToggle}
         disabled={!isConnected}
         className={`
-          relative w-24 h-24 rounded-full flex items-center justify-center
-          text-white shadow-lg transition-all duration-200
+          relative flex size-16 items-center justify-center rounded-full shadow-lg transition-all duration-200
           ${isRecording
-            ? 'bg-red-500 hover:bg-red-600 scale-110'
+            ? 'bg-white text-slate-900 hover:bg-slate-100'
             : isConnected
-              ? 'bg-blue-500 hover:bg-blue-600 hover:shadow-xl hover:-translate-y-0.5'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+              ? 'border border-white/25 bg-white/10 text-white hover:bg-white/15'
+              : 'cursor-not-allowed border border-white/10 bg-white/5 text-slate-500 shadow-none'
           }
           ${!isConnected && !isRecording ? 'animate-breathe' : ''}
         `}
-        aria-label={isRecording ? 'Turn microphone off' : 'Turn microphone on'}
+        aria-label={isRecording ? 'Mute microphone' : 'Unmute microphone'}
       >
         {isRecording ? (
-          // Stop icon
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
-            <path fillRule="evenodd" d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z" clipRule="evenodd" />
-          </svg>
+          <Mic className="size-7" strokeWidth={2} />
         ) : (
-          // Mic icon
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
-            <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
-            <path d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.751 6.751 0 0 1-6 6.709v2.291h3a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h3v-2.291a6.751 6.751 0 0 1-6-6.709v-1.5A.75.75 0 0 1 6 10.5Z" />
-          </svg>
+          <MicOff className="size-7" strokeWidth={2} />
         )}
       </button>
     </div>

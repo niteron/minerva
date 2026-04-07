@@ -1,9 +1,10 @@
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { LogOut } from 'lucide-react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import { VoiceChat } from '@/components/voice-chat/index.tsx';
-import { Button } from '@/components/ui/button';
+import { AppShell } from '@/components/layout/app-shell.tsx';
+import { AgentCallPage } from '@/pages/agent-call-page.tsx';
+import { AgentsPage } from '@/pages/agents-page.tsx';
 import {
   Card,
   CardDescription,
@@ -34,25 +35,15 @@ function App() {
 
 function MainApp({ signOut }: { signOut?: () => void }) {
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
-      <header className="border-border border-b">
-        <div className="mx-auto flex max-w-3xl items-start justify-between gap-4 px-4 py-4">
-          <div>
-            <p className="text-lg font-medium">Nova — Japanese tutor</p>
-            <p className="text-muted-foreground text-sm">
-              Built with AgentCore, Strands, and Amplify
-            </p>
-          </div>
-          <Button type="button" variant="ghost" size="sm" onClick={signOut}>
-            <LogOut />
-            Sign out
-          </Button>
-        </div>
-      </header>
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <VoiceChat />
-      </main>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/agents" replace />} />
+        <Route element={<AppShell signOut={signOut} />}>
+          <Route path="/agents" element={<AgentsPage />} />
+          <Route path="/agents/:id" element={<AgentCallPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

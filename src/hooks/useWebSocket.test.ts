@@ -119,6 +119,22 @@ describe('useWebSocket', () => {
     expect(url).not.toContain('arn%3A');
   });
 
+  it('uses runtimeArn from props when provided', async () => {
+    const customArn =
+      'arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/other-runtime-id';
+    const { result } = renderHook(() =>
+      useWebSocket({ ...defaultProps, runtimeArn: customArn }),
+    );
+
+    await act(async () => {
+      await result.current.connect();
+    });
+
+    expect(MockWebSocket.instances[0].url).toContain(
+      `/runtimes/${customArn}/ws`,
+    );
+  });
+
   it('becomes connected after onopen', async () => {
     const { result } = renderHook(() => useWebSocket(defaultProps));
 

@@ -12,6 +12,8 @@ interface UseWebSocketProps {
   onInterruption: () => void;
   onToolUse: (name: string) => void;
   onError: (message: string) => void;
+  /** When set, used instead of `amplify_outputs.json` custom.agentRuntimeArn */
+  runtimeArn?: string;
 }
 
 /**
@@ -72,7 +74,8 @@ export function useWebSocket(props: UseWebSocketProps) {
     setConnectionStatus('connecting');
 
     try {
-      const runtimeArn = outputs.custom?.agentRuntimeArn;
+      const runtimeArn =
+        propsRef.current.runtimeArn ?? outputs.custom?.agentRuntimeArn;
       if (!runtimeArn) throw new Error('Runtime ARN not found in Amplify config');
 
       const url = await createPresignedUrl(runtimeArn);

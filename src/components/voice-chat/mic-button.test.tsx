@@ -22,13 +22,13 @@ describe('MicButton', () => {
     expect(button).toBeDisabled();
   });
 
-  it('uses turn-off label while recording', () => {
+  it('uses mute label while recording', () => {
     render(<MicButton isRecording={true} isConnected={true} onToggle={() => {}} />);
-    expect(screen.getByLabelText('Turn microphone off')).toBeInTheDocument();
+    expect(screen.getByLabelText('Mute microphone')).toBeInTheDocument();
   });
 
-  it('uses turn-on label when not recording', () => {
+  it('uses unmute label when not recording', () => {
     render(<MicButton isRecording={false} isConnected={true} onToggle={() => {}} />);
-    expect(screen.getByLabelText('Turn microphone on')).toBeInTheDocument();
+    expect(screen.getByLabelText('Unmute microphone')).toBeInTheDocument();
   });
 });

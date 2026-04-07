@@ -15,51 +15,55 @@ export function TranscriptView({ entries, isAssistantSpeaking, activeTool }: Tra
   }, [entries, isAssistantSpeaking, activeTool]);
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+    <div
+      ref={scrollRef}
+      className="flex min-h-0 flex-1 flex-col overflow-y-auto rounded-2xl border border-white/10 bg-black/25 px-3 py-3 backdrop-blur-sm"
+    >
       {entries.length === 0 && !isAssistantSpeaking && !activeTool && (
-        <p className="text-center text-gray-300 mt-16">
-          Press the mic button and start speaking
+        <p className="text-center text-sm text-slate-500 mt-8 px-4">
+          Unmute the mic and speak to start the lesson
         </p>
       )}
 
-      {entries.map((entry, i) => (
-        <div
-          key={i}
-          className={`flex ${entry.role === 'user' ? 'justify-end' : 'justify-start'}`}
-        >
+      <div className="space-y-3">
+        {entries.map((entry, i) => (
           <div
-            className={`
-              max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed
-              ${entry.role === 'user'
-                ? 'bg-blue-500 text-white rounded-br-md'
-                : 'bg-gray-100 text-gray-800 rounded-bl-md'
-              }
-              ${!entry.isFinal ? 'opacity-60' : ''}
-            `}
+            key={i}
+            className={`flex ${entry.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            {entry.text}
+            <div
+              className={`
+                max-w-[90%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed
+                ${entry.role === 'user'
+                  ? 'rounded-br-md bg-sky-500/90 text-white'
+                  : 'rounded-bl-md border border-white/10 bg-white/10 text-slate-100'
+                }
+                ${!entry.isFinal ? 'opacity-60' : ''}
+              `}
+            >
+              {entry.text}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      {/* Assistant speaking indicator */}
-      {isAssistantSpeaking && (
-        <div className="flex justify-start">
-          <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-gray-100 flex items-center gap-1">
-            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+        {isAssistantSpeaking && (
+          <div className="flex justify-start">
+            <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-white/10 bg-white/10 px-4 py-3">
+              <span className="size-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="size-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="size-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTool && (
-        <div className="flex justify-start">
-          <div className="bg-gray-50 text-gray-500 border border-gray-200 px-4 py-2.5 rounded-2xl text-sm animate-pulse">
-            Using {activeTool}…
+        {activeTool && (
+          <div className="flex justify-start">
+            <div className="animate-pulse rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-slate-400">
+              Using {activeTool}…
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

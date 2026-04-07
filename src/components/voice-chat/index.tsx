@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { Phone, PhoneOff } from 'lucide-react';
 import { useWebSocket } from '../../hooks/useWebSocket.ts';
 import { useAudioInput } from '../../hooks/useAudioInput.ts';
 import { useAudioOutput } from '../../hooks/useAudioOutput.ts';
@@ -7,11 +8,31 @@ import { MicButton } from './mic-button.tsx';
 import { TranscriptView } from './transcript-view.tsx';
 import type { TranscriptEntry } from './types.ts';
 
-export function VoiceChat() {
+function formatCallDuration(totalSeconds: number) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+export type VoiceChatProps = {
+  runtimeArn?: string;
+  agentName?: string;
+  agentSubtitle?: string;
+  agentInitial?: string;
+};
+
+export function VoiceChat({
+  runtimeArn,
+  agentName = 'Nova',
+  agentSubtitle = 'Japanese tutor',
+  agentInitial = 'N',
+}: VoiceChatProps = {}) {
   const [transcripts, setTranscripts] = useState<TranscriptEntry[]>([]);
   const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [callStartedAt, setCallStartedAt] = useState<number | null>(null);
+  const [callElapsedSec, setCallElapsedSec] = useState(0);
 
   const audioOutput = useAudioOutput();
 
@@ -59,6 +80,7 @@ export function VoiceChat() {
     onInterruption: handleInterruption,
     onToolUse: handleToolUse,
     onError: handleError,
+    runtimeArn,
   });
 
   const audioInput = useAudioInput({
@@ -82,6 +104,25 @@ export function VoiceChat() {
     }
   }, [ws.connectionStatus, audioInput]);
 
+  useEffect(() => {
+    if (ws.connectionStatus === 'connected') {
+      const t = Date.now();
+      setCallStartedAt(t);
+      setCallElapsedSec(0);
+    } else {
+      setCallStartedAt(null);
+      setCallElapsedSec(0);
+    }
+  }, [ws.connectionStatus]);
+
+  useEffect(() => {
+    if (callStartedAt === null) return;
+    const id = window.setInterval(() => {
+      setCallElapsedSec(Math.floor((Date.now() - callStartedAt) / 1000));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [callStartedAt]);
+
   const handleMicToggle = useCallback(() => {
     if (audioInput.isRecording) {
       audioInput.stopRecording();
@@ -104,46 +145,106 @@ export function VoiceChat() {
   }, [ws, audioInput, audioOutput]);
 
   const isConnected = ws.connectionStatus === 'connected';
+  const status = ws.connectionStatus;
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto px-4">
-      {/* Status bar */}
-      <div className="flex items-center justify-between py-4">
-        <ConnectionStatus status={ws.connectionStatus} />
-        <button
-          onClick={handleConnect}
-          className={`
-            px-5 py-2 rounded-full text-sm font-medium transition-all duration-200
-            ${ws.connectionStatus === 'disconnected'
-              ? 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md'
-              : ws.connectionStatus === 'connecting'
-                ? 'bg-gray-200 text-gray-400 cursor-wait'
-                : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'
-            }
-          `}
-          disabled={ws.connectionStatus === 'connecting'}
-        >
-          {ws.connectionStatus === 'disconnected' ? 'Connect' : ws.connectionStatus === 'connecting' ? 'Connecting…' : 'Disconnect'}
-        </button>
-      </div>
-
-      {/* Error banner */}
-      {error && (
-        <div className="mx-0 mt-2 px-4 py-2 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
-          {error}
+    <div className="mx-auto flex h-full min-h-[calc(100vh-8rem)] w-full max-w-md flex-col">
+      <div className="flex flex-1 flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-slate-800/90 via-slate-900 to-slate-950 shadow-2xl shadow-black/40">
+        <div className="flex shrink-0 flex-col items-center gap-2 px-4 pt-6">
+          <ConnectionStatus status={status} />
         </div>
-      )}
 
-      {/* Transcript */}
-      <TranscriptView entries={transcripts} isAssistantSpeaking={isAssistantSpeaking} activeTool={activeTool} />
+        {error && (
+          <div className="mx-4 mt-3 rounded-xl border border-red-400/30 bg-red-500/15 px-4 py-2 text-center text-sm text-red-200">
+            {error}
+          </div>
+        )}
 
-      {/* Mic button */}
-      <div className="flex justify-center py-8">
-        <MicButton
-          isRecording={audioInput.isRecording}
-          isConnected={isConnected}
-          onToggle={handleMicToggle}
-        />
+        <div className="flex shrink-0 flex-col items-center px-6 pt-8 pb-6">
+          <div
+            className={`
+              relative mb-4 flex size-32 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-600 text-4xl font-semibold text-white shadow-xl ring-4 transition-all duration-500
+              ${isAssistantSpeaking ? 'ring-emerald-300/60 scale-[1.02]' : 'ring-white/10'}
+            `}
+            aria-hidden
+          >
+            {agentInitial}
+            {isAssistantSpeaking && (
+              <span className="absolute inset-0 rounded-full border-2 border-emerald-300/40 animate-ping" />
+            )}
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">{agentName}</h2>
+          <p className="text-sm text-slate-400">{agentSubtitle}</p>
+          {isConnected && (
+            <p className="mt-3 font-mono text-lg tabular-nums tracking-widest text-slate-200">
+              {formatCallDuration(callElapsedSec)}
+            </p>
+          )}
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col px-4 pb-6">
+          <p className="mb-2 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
+            Live captions
+          </p>
+          <TranscriptView
+            entries={transcripts}
+            isAssistantSpeaking={isAssistantSpeaking}
+            activeTool={activeTool}
+          />
+        </div>
+
+        <div className="flex shrink-0 items-end justify-center gap-10 border-t border-white/5 bg-slate-950/40 px-6 pb-8 pt-6">
+          {status === 'connected' ? (
+            <>
+              <div className="flex flex-col items-center gap-2">
+                <MicButton
+                  isRecording={audioInput.isRecording}
+                  isConnected={isConnected}
+                  onToggle={handleMicToggle}
+                />
+                <span className="text-[11px] font-medium text-slate-500">
+                  {audioInput.isRecording ? 'Mute' : 'Unmute'}
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleConnect}
+                  className="flex size-16 items-center justify-center rounded-full bg-red-500 text-white shadow-lg transition hover:bg-red-600"
+                  aria-label="End call"
+                >
+                  <PhoneOff className="size-7" strokeWidth={2} />
+                </button>
+                <span className="text-[11px] font-medium text-slate-500">End</span>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={handleConnect}
+                disabled={status === 'connecting'}
+                className={`
+                  flex size-20 items-center justify-center rounded-full shadow-lg transition
+                  ${status === 'disconnected'
+                    ? 'bg-emerald-500 text-white hover:bg-emerald-400'
+                    : 'cursor-wait bg-slate-600 text-slate-300'
+                  }
+                `}
+                aria-label={status === 'connecting' ? 'Connecting' : 'Start call'}
+              >
+                {status === 'connecting' ? (
+                  <span className="size-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : (
+                  <Phone className="size-9" strokeWidth={2} />
+                )}
+              </button>
+              <span className="text-[11px] font-medium text-slate-500">
+                {status === 'connecting' ? 'Connecting…' : 'Start call'}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import type { TranscriptEntry } from './types.ts';
 describe('TranscriptView', () => {
   it('shows placeholder when there are no entries', () => {
     render(<TranscriptView entries={[]} isAssistantSpeaking={false} activeTool={null} />);
-    expect(screen.getByText('Press the mic button and start speaking')).toBeInTheDocument();
+    expect(screen.getByText('Unmute the mic and speak to start the lesson')).toBeInTheDocument();
   });
 
   it('renders user messages', () => {
