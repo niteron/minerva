@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import type { TranscriptEntry } from './types.ts';
+import type { TranscriptEntry } from './types';
 
 interface TranscriptViewProps {
   entries: TranscriptEntry[];
@@ -21,7 +21,7 @@ export function TranscriptView({ entries, isAssistantSpeaking, activeTool }: Tra
     >
       {entries.length === 0 && !isAssistantSpeaking && !activeTool && (
         <p className="text-center text-sm text-slate-500 mt-8 px-4">
-          Unmute the mic and speak to start the lesson
+          Unmute and describe your legal issue to begin your assessment
         </p>
       )}
 

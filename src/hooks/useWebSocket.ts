@@ -4,7 +4,7 @@ import { SignatureV4 } from '@smithy/signature-v4';
 import { HttpRequest } from '@smithy/protocol-http';
 import { Sha256 } from '@aws-crypto/sha256-js';
 import outputs from '../../amplify_outputs.json';
-import type { ConnectionStatus } from '../components/voice-chat/types.ts';
+import type { ConnectionStatus } from '../components/voice-chat/types';
 
 interface UseWebSocketProps {
   onAudio: (base64: string) => void;

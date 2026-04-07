@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useWebSocket } from './useWebSocket.ts';
+import { useWebSocket } from './useWebSocket';
 
 // amplify_outputs.json mock
 vi.mock('../../amplify_outputs.json', () => ({

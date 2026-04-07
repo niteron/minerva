@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAudioOutput } from './useAudioOutput.ts';
+import { useAudioOutput } from './useAudioOutput';
 
 describe('useAudioOutput', () => {
   it('creates AudioContext on init', async () => {

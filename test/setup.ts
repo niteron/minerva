@@ -2,15 +2,12 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
-// Clean up DOM between tests
 afterEach(() => {
   cleanup();
 });
 
-// scrollTo stub (not implemented in jsdom)
 Element.prototype.scrollTo = function () {};
 
-// AudioBufferSourceNode mock
 class MockAudioBufferSourceNode {
   buffer: unknown = null;
   onended: (() => void) | null = null;
@@ -20,7 +17,6 @@ class MockAudioBufferSourceNode {
   stop() {}
 }
 
-// AudioBuffer mock
 class MockAudioBuffer {
   numberOfChannels: number;
   length: number;
@@ -38,7 +34,6 @@ class MockAudioBuffer {
   getChannelData() { return this.channelData; }
 }
 
-// AudioWorkletNode mock (audio input path)
 class MockAudioWorkletNode {
   port = {
     onmessage: null as ((event: MessageEvent) => void) | null,
@@ -48,7 +43,6 @@ class MockAudioWorkletNode {
   disconnect() {}
 }
 
-// AudioContext mock
 class MockAudioContext {
   sampleRate = 48000;
   currentTime = 0;
@@ -73,7 +67,6 @@ class MockAudioContext {
 Object.defineProperty(globalThis, 'AudioContext', { value: MockAudioContext });
 Object.defineProperty(globalThis, 'AudioWorkletNode', { value: MockAudioWorkletNode });
 
-// MediaDevices mock
 Object.defineProperty(navigator, 'mediaDevices', {
   value: {
     getUserMedia: async () => ({
@@ -82,6 +75,5 @@ Object.defineProperty(navigator, 'mediaDevices', {
   },
 });
 
-// URL.createObjectURL mock
 URL.createObjectURL = () => 'blob:mock';
 URL.revokeObjectURL = () => {};

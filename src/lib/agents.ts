@@ -15,21 +15,21 @@ const defaultArn =
 
 export const AGENTS: Agent[] = [
   {
-    id: 'nova-japanese',
-    name: 'Nova',
+    id: 'legal-assessment',
+    name: 'Nova Legal',
     description:
-      'Japanese language tutor with real-time voice, corrections, and natural conversation.',
-    subtitle: 'Japanese tutor',
+      'Guides users through legal issue assessment with deep follow-up questions, risk spotting, and practical preparation steps.',
+    subtitle: 'Legal assessment agent',
     initial: 'N',
     runtimeArn: defaultArn,
   },
   {
-    id: 'nova-practice',
-    name: 'Nova Practice',
+    id: 'legal-intake',
+    name: 'Nova Intake',
     description:
-      'Extra speaking drills and repetition using the same voice runtime (demo listing).',
-    subtitle: 'Conversation practice',
-    initial: 'P',
+      'Runs structured legal intake: timeline capture, evidence checklist, and attorney-ready case summary.',
+    subtitle: 'Legal intake specialist',
+    initial: 'I',
     runtimeArn: defaultArn,
   },
 ];

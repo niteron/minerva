@@ -1,7 +1,10 @@
-import { Link, Outlet, useMatch } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
-import { getAgentById } from '@/lib/agents.ts';
+import { getAgentById } from '@/lib/agents';
 import { Button } from '@/components/ui/button';
 import {
   Breadcrumb,
@@ -10,20 +13,28 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb.tsx';
+} from '@/components/ui/breadcrumb';
 
-export function AppShell({ signOut }: { signOut?: () => void }) {
-  const agentMatch = useMatch('/agents/:id');
-  const id = agentMatch?.params.id;
+export function AppShell({
+  signOut,
+  children,
+}: {
+  signOut?: () => void;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const agentIdMatch = pathname.match(/^\/agents\/([^/]+)$/);
+  const id = agentIdMatch?.[1];
   const agent = id ? getAgentById(id) : undefined;
+  const isAgentRoute = Boolean(agentIdMatch);
 
   return (
     <div className="bg-slate-950 text-slate-50 flex min-h-screen flex-col">
       <header className="border-white/10 border-b bg-slate-950/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
           <div className="min-w-0">
-            <p className="text-base font-medium tracking-tight text-white">Voice agent</p>
-            <p className="text-slate-400 text-xs">Nova Sonic · Amplify</p>
+            <p className="text-base font-medium tracking-tight text-white">Legal assessment</p>
+            <p className="text-slate-400 text-xs">Nova Legal · Amplify</p>
           </div>
           <Button
             type="button"
@@ -43,27 +54,24 @@ export function AppShell({ signOut }: { signOut?: () => void }) {
           <Breadcrumb>
             <BreadcrumbList className="text-slate-500 sm:gap-2">
               <BreadcrumbItem>
-                {agentMatch && agent ? (
+                {isAgentRoute ? (
                   <BreadcrumbLink asChild>
-                    <Link
-                      to="/agents"
-                      className="text-slate-400 hover:text-white"
-                    >
-                      Agents
+                    <Link href="/agents" className="text-slate-400 hover:text-white">
+                      Legal agents
                     </Link>
                   </BreadcrumbLink>
                 ) : (
                   <BreadcrumbPage className="font-medium text-slate-200">
-                    Agents
+                    Legal agents
                   </BreadcrumbPage>
                 )}
               </BreadcrumbItem>
-              {agentMatch && agent && (
+              {isAgentRoute && (
                 <>
                   <BreadcrumbSeparator className="text-slate-600 [&>svg]:text-slate-600" />
                   <BreadcrumbItem>
                     <BreadcrumbPage className="font-medium text-slate-100">
-                      {agent.name}
+                      {agent?.name ?? 'Agent'}
                     </BreadcrumbPage>
                   </BreadcrumbItem>
                 </>
@@ -74,7 +82,7 @@ export function AppShell({ signOut }: { signOut?: () => void }) {
       </div>
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-6 pt-4">
-        <Outlet />
+        {children}
       </main>
     </div>
   );

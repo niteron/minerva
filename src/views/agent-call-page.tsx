@@ -1,12 +1,12 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { Navigate, useParams } from 'react-router-dom';
 
-import { getAgentById } from '@/lib/agents.ts';
-import { VoiceChat } from '@/components/voice-chat/index.tsx';
+import type { Agent } from '@/lib/agents';
+import { VoiceChat } from '@/components/voice-chat';
 
-export function AgentCallPage() {
-  const { id } = useParams();
+export function AgentCallPage({ agent }: { agent: Agent }) {
   const [sessionReady, setSessionReady] = useState(false);
 
   useEffect(() => {
@@ -25,15 +25,6 @@ export function AgentCallPage() {
     };
   }, []);
 
-  if (!id) {
-    return <Navigate to="/agents" replace />;
-  }
-
-  const agent = getAgentById(id);
-  if (!agent) {
-    return <Navigate to="/agents" replace />;
-  }
-
   if (!sessionReady) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 py-24">
@@ -41,7 +32,7 @@ export function AgentCallPage() {
           className="size-8 animate-spin rounded-full border-2 border-white/20 border-t-emerald-400"
           aria-hidden
         />
-        <p className="text-slate-400 text-sm">Connecting to agent…</p>
+        <p className="text-slate-400 text-sm">Preparing legal assessment session…</p>
       </div>
     );
   }

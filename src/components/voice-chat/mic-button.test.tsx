@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MicButton } from './mic-button.tsx';
+import { MicButton } from './mic-button';
 
 describe('MicButton', () => {
   it('is clickable when connected', () => {

@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom';
+'use client';
 
-import { AGENTS } from '@/lib/agents.ts';
+import Link from 'next/link';
+
+import { AGENTS } from '@/lib/agents';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,10 +16,9 @@ export function AgentsPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-white">Your agents</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">Legal agents</h1>
         <p className="text-slate-400 mt-1 text-sm">
-          Pick an agent and launch a voice session. Each card opens the call experience for that
-          agent.
+          Choose a legal workflow and launch a voice session. Each card opens a focused legal assessment call.
         </p>
       </div>
 
@@ -44,7 +45,7 @@ export function AgentsPage() {
               </CardHeader>
               <CardFooter className="mt-auto border-t border-white/5 pt-4">
                 <Button className="w-full" asChild>
-                  <Link to={`/agents/${agent.id}`}>Launch</Link>
+                  <Link href={`/agents/${agent.id}`}>Launch</Link>
                 </Button>
               </CardFooter>
             </Card>

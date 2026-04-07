@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { TranscriptView } from './transcript-view.tsx';
-import type { TranscriptEntry } from './types.ts';
+import { TranscriptView } from './transcript-view';
+import type { TranscriptEntry } from './types';
 
 describe('TranscriptView', () => {
   it('shows placeholder when there are no entries', () => {
     render(<TranscriptView entries={[]} isAssistantSpeaking={false} activeTool={null} />);
-    expect(screen.getByText('Unmute the mic and speak to start the lesson')).toBeInTheDocument();
+    expect(screen.getByText('Unmute and describe your legal issue to begin your assessment')).toBeInTheDocument();
   });
 
   it('renders user messages', () => {

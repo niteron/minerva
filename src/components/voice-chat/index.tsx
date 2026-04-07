@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Phone, PhoneOff } from 'lucide-react';
-import { useWebSocket } from '../../hooks/useWebSocket.ts';
-import { useAudioInput } from '../../hooks/useAudioInput.ts';
-import { useAudioOutput } from '../../hooks/useAudioOutput.ts';
-import { ConnectionStatus } from './connection-status.tsx';
-import { MicButton } from './mic-button.tsx';
-import { TranscriptView } from './transcript-view.tsx';
-import type { TranscriptEntry } from './types.ts';
+import { useWebSocket } from '../../hooks/useWebSocket';
+import { useAudioInput } from '../../hooks/useAudioInput';
+import { useAudioOutput } from '../../hooks/useAudioOutput';
+import { ConnectionStatus } from './connection-status';
+import { MicButton } from './mic-button';
+import { TranscriptView } from './transcript-view';
+import type { TranscriptEntry } from './types';
 
 function formatCallDuration(totalSeconds: number) {
   const m = Math.floor(totalSeconds / 60);
@@ -23,8 +23,8 @@ export type VoiceChatProps = {
 
 export function VoiceChat({
   runtimeArn,
-  agentName = 'Nova',
-  agentSubtitle = 'Japanese tutor',
+  agentName = 'Nova Legal',
+  agentSubtitle = 'Legal assessment agent',
   agentInitial = 'N',
 }: VoiceChatProps = {}) {
   const [transcripts, setTranscripts] = useState<TranscriptEntry[]>([]);
@@ -184,7 +184,7 @@ export function VoiceChat({
 
         <div className="flex min-h-0 flex-1 flex-col px-4 pb-6">
           <p className="mb-2 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
-            Live captions
+            Case notes
           </p>
           <TranscriptView
             entries={transcripts}

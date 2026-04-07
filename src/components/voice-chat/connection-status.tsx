@@ -1,4 +1,4 @@
-import type { ConnectionStatus as Status } from './types.ts';
+import type { ConnectionStatus as Status } from './types';
 
 const statusConfig = {
   disconnected: { label: 'Not in call', color: 'bg-slate-500' },

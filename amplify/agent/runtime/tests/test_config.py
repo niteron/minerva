@@ -7,8 +7,11 @@ from config import get_model, SYSTEM_PROMPT
 
 
 class TestSystemPrompt:
-    def test_prompt_mentions_japanese_learning(self):
-        assert "Japanese" in SYSTEM_PROMPT
+    def test_prompt_mentions_legal_assessment(self):
+        assert "legal assessment" in SYSTEM_PROMPT.lower()
+
+    def test_prompt_mentions_not_a_lawyer_boundary(self):
+        assert "not a lawyer" in SYSTEM_PROMPT.lower()
 
     def test_prompt_mentions_tools(self):
         assert "## Tools" in SYSTEM_PROMPT

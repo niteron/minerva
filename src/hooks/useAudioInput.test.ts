@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAudioInput } from './useAudioInput.ts';
+import { useAudioInput } from './useAudioInput';
 
 describe('useAudioInput', () => {
   it('starts not recording', () => {
