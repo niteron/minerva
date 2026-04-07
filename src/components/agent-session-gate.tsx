@@ -38,12 +38,12 @@ export function AgentSessionGate({
 
   if (!sessionReady) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-3 py-24">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 bg-muted/30 py-24">
         <span
-          className="size-8 animate-spin rounded-full border-2 border-white/20 border-t-emerald-400"
+          className="size-8 animate-spin rounded-full border-2 border-muted-foreground/25 border-t-primary"
           aria-hidden
         />
-        <p className="text-slate-400 text-sm">Preparing legal assessment session...</p>
+        <p className="text-muted-foreground text-sm">Joining meeting…</p>
       </div>
     );
   }
