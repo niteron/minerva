@@ -44,22 +44,21 @@ export function createVoiceAgent({ stack, userPool, userPoolClient, nameSuffix }
     );
   }
 
-  // WebSocket はブラウザからカスタムヘッダーを設定できないため、
-  // JWT 認証ではなく IAM (SigV4) 認証を使用する。
-  // Cognito Identity Pool の認証済みロールに権限を付与して制御する。
+  // Browsers cannot set custom headers on WebSocket, so we use IAM (SigV4) instead of JWT.
+  // Access is enforced via the Cognito Identity Pool authenticated role.
 
   const runtimeName = nameSuffix ? `nova_sonic_${nameSuffix}` : 'nova_sonic';
 
   const runtime = new agentcore.Runtime(stack, 'VoiceAgentRuntime', {
     runtimeName,
     agentRuntimeArtifact,
-    // authorizerConfiguration なし → IAM (SigV4) 認証
+    // No authorizerConfiguration → IAM (SigV4)
     environmentVariables: {
       BYPASS_TOOL_CONSENT: 'true',
-      // Nova Sonic 設定
+      // Nova Sonic
       NOVA_SONIC_VOICE: 'tiffany',
       NOVA_SONIC_REGION: 'us-east-1',
-      // Observability（OTEL）
+      // Observability (OTEL)
       AGENT_OBSERVABILITY_ENABLED: 'true',
       OTEL_PYTHON_DISTRO: 'aws_distro',
       OTEL_PYTHON_CONFIGURATOR: 'aws_configurator',
@@ -71,7 +70,7 @@ export function createVoiceAgent({ stack, userPool, userPoolClient, nameSuffix }
     runtime.node.addDependency(containerImageBuild);
   }
 
-  // Bedrock モデル呼び出し権限
+  // Bedrock model invocation
   runtime.addToRolePolicy(new iam.PolicyStatement({
     actions: [
       'bedrock:InvokeModel',

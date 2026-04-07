@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-/** Amplify モジュールのモック */
+/** Mock Amplify modules for tests */
 export function mockAmplify() {
   vi.mock('aws-amplify', () => ({
     Amplify: {

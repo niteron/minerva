@@ -18,7 +18,7 @@ export function TranscriptView({ entries, isAssistantSpeaking, activeTool }: Tra
     <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
       {entries.length === 0 && !isAssistantSpeaking && !activeTool && (
         <p className="text-center text-gray-300 mt-16">
-          マイクボタンを押して話しかけてください
+          Press the mic button and start speaking
         </p>
       )}
 
@@ -42,7 +42,7 @@ export function TranscriptView({ entries, isAssistantSpeaking, activeTool }: Tra
         </div>
       ))}
 
-      {/* アシスタント話し中インジケーター */}
+      {/* Assistant speaking indicator */}
       {isAssistantSpeaking && (
         <div className="flex justify-start">
           <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-gray-100 flex items-center gap-1">
@@ -56,7 +56,7 @@ export function TranscriptView({ entries, isAssistantSpeaking, activeTool }: Tra
       {activeTool && (
         <div className="flex justify-start">
           <div className="bg-gray-50 text-gray-500 border border-gray-200 px-4 py-2.5 rounded-2xl text-sm animate-pulse">
-            {activeTool}ツールを利用中…
+            Using {activeTool}…
           </div>
         </div>
       )}

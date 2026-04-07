@@ -4,7 +4,7 @@ import { SignatureV4 } from '@smithy/signature-v4';
 import { HttpRequest } from '@smithy/protocol-http';
 import { Sha256 } from '@aws-crypto/sha256-js';
 import outputs from '../../amplify_outputs.json';
-import type { ConnectionStatus } from '../components/VoiceChat/types.ts';
+import type { ConnectionStatus } from '../components/voice-chat/types.ts';
 
 interface UseWebSocketProps {
   onAudio: (base64: string) => void;
@@ -15,8 +15,8 @@ interface UseWebSocketProps {
 }
 
 /**
- * SigV4 事前署名 WebSocket URL を生成する。
- * Python botocore の create_presigned_url() と同等の処理を行う。
+ * Build a SigV4-presigned WebSocket URL.
+ * Matches the behavior of Python botocore's create_presigned_url().
  */
 async function createPresignedUrl(runtimeArn: string): Promise<string> {
   const session = await fetchAuthSession();
@@ -27,7 +27,7 @@ async function createPresignedUrl(runtimeArn: string): Promise<string> {
   const region = arnParts[3];
 
   const hostname = `bedrock-agentcore.${region}.amazonaws.com`;
-  // ARN はエンコードしない（公式 Python サンプル準拠）
+  // Do not URL-encode the ARN (matches official Python samples)
   const path = `/runtimes/${runtimeArn}/ws`;
 
   const signer = new SignatureV4({
@@ -39,7 +39,7 @@ async function createPresignedUrl(runtimeArn: string): Promise<string> {
       sessionToken: credentials.sessionToken,
     },
     sha256: Sha256,
-    // デフォルト true: パス内の ":" を "%3A" にエンコードして署名（botocore と一致）
+    // Default true: encode ":" in path as "%3A" for signing (botocore-compatible)
   });
 
   const request = new HttpRequest({
@@ -53,8 +53,8 @@ async function createPresignedUrl(runtimeArn: string): Promise<string> {
 
   const presigned = await signer.presign(request, { expiresIn: 300 });
 
-  // RFC 3986 エンコーディングでクエリ文字列を構築
-  // （URLSearchParams は form-urlencoded で space→"+" になり SigV4 と不一致の可能性）
+  // Build query string with RFC 3986 encoding
+  // (URLSearchParams uses form-urlencoded spaces as "+" and can mismatch SigV4)
   const queryParts = Object.entries(presigned.query ?? {})
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
     .join('&');

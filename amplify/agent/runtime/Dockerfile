@@ -2,7 +2,7 @@ FROM --platform=linux/arm64 public.ecr.aws/docker/library/python:3.13-slim-bookw
 
 WORKDIR /app
 
-# PyAudio のビルドに必要（strands-agents[bidi] の依存）
+# Required to build PyAudio (dependency of strands-agents[bidi])
 RUN apt-get update && apt-get install -y --no-install-recommends \
     portaudio19-dev \
     build-essential \

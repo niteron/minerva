@@ -1,23 +1,23 @@
-"""簡易計算ツール"""
+"""Simple arithmetic calculator tool."""
 
 from strands import tool
 
 
 @tool
 def simple_calculator(expression: str) -> str:
-    """簡単な計算を行います。四則演算に対応しています。
+    """Evaluate a basic arithmetic expression (add, subtract, multiply, divide).
 
     Args:
-        expression: 計算式（例: "2 + 3", "10 * 5"）
+        expression: Arithmetic expression, e.g. "2 + 3" or "10 * 5".
 
     Returns:
-        計算結果の文字列
+        String with the expression and result, or an error message.
     """
     allowed_chars = set("0123456789+-*/.() ")
     if not all(c in allowed_chars for c in expression):
-        return "エラー: 許可されていない文字が含まれています"
+        return "Error: expression contains disallowed characters"
     try:
         result = eval(expression)  # noqa: S307
         return f"{expression} = {result}"
     except Exception as e:
-        return f"計算エラー: {e}"
+        return f"Calculation error: {e}"

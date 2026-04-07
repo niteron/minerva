@@ -1,4 +1,4 @@
-"""Voice Agent - WebSocket + BidiAgent ブリッジ"""
+"""Voice agent: WebSocket bridge to BidiAgent."""
 
 from bedrock_agentcore import BedrockAgentCoreApp
 from strands.experimental.bidi import BidiAgent
@@ -14,7 +14,7 @@ app = BedrockAgentCoreApp()
 
 
 class WebSocketBidiInput:
-    """WebSocket からの音声データを BidiAudioInputEvent に変換"""
+    """Map WebSocket audio payloads to BidiAudioInputEvent."""
 
     def __init__(self, websocket):
         self.websocket = websocket
@@ -38,7 +38,7 @@ class WebSocketBidiInput:
 
 
 class WebSocketBidiOutput:
-    """BidiAgent のイベントを WebSocket でブラウザに送信"""
+    """Forward BidiAgent events to the browser over WebSocket."""
 
     def __init__(self, websocket):
         self.websocket = websocket
@@ -90,7 +90,7 @@ class WebSocketBidiOutput:
 
 @app.websocket
 async def websocket_handler(websocket, context):
-    """WebSocket ハンドラ: ブラウザ ↔ BidiAgent ブリッジ"""
+    """WebSocket handler: browser ↔ BidiAgent bridge."""
     await websocket.accept()
 
     model = get_model()

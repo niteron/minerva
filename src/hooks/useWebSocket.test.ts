@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useWebSocket } from './useWebSocket.ts';
 
-// amplify_outputs.json モック
+// amplify_outputs.json mock
 vi.mock('../../amplify_outputs.json', () => ({
   default: {
     custom: {
@@ -11,7 +11,7 @@ vi.mock('../../amplify_outputs.json', () => ({
   },
 }));
 
-// Amplify Auth モック（IAM credentials を返す）
+// Amplify Auth mock (returns IAM credentials)
 vi.mock('aws-amplify/auth', () => ({
   fetchAuthSession: async () => ({
     credentials: {
@@ -22,7 +22,7 @@ vi.mock('aws-amplify/auth', () => ({
   }),
 }));
 
-// SigV4 署名モック（vi.mock ファクトリ内でクラス定義）
+// SigV4 signer mock (class defined inside vi.mock factory)
 vi.mock('@smithy/signature-v4', () => ({
   SignatureV4: class {
     async presign() {
@@ -50,7 +50,7 @@ vi.mock('@smithy/protocol-http', () => ({
 
 vi.mock('@aws-crypto/sha256-js', () => ({ Sha256: class {} }));
 
-// WebSocket モック
+// WebSocket mock
 class MockWebSocket {
   static OPEN = 1;
   static CLOSED = 3;
@@ -96,12 +96,12 @@ describe('useWebSocket', () => {
     onError: vi.fn(),
   };
 
-  it('初期状態は disconnected', () => {
+  it('starts disconnected', () => {
     const { result } = renderHook(() => useWebSocket(defaultProps));
     expect(result.current.connectionStatus).toBe('disconnected');
   });
 
-  it('connect で SigV4 presigned URL を使って WebSocket を開く', async () => {
+  it('opens WebSocket with SigV4 presigned URL on connect', async () => {
     const { result } = renderHook(() => useWebSocket(defaultProps));
 
     await act(async () => {
@@ -110,16 +110,16 @@ describe('useWebSocket', () => {
 
     expect(MockWebSocket.instances).toHaveLength(1);
     const url = MockWebSocket.instances[0].url;
-    // SigV4 presigned URL のフォーマットを検証
+    // Validate presigned URL shape
     expect(url).toContain('wss://bedrock-agentcore.us-east-1.amazonaws.com');
     expect(url).toContain('qualifier=DEFAULT');
     expect(url).toContain('X-Amz-Algorithm=AWS4-HMAC-SHA256');
     expect(url).toContain('X-Amz-Signature=');
-    // ARN はエンコードされていない
+    // ARN must not be percent-encoded
     expect(url).not.toContain('arn%3A');
   });
 
-  it('connect 後に onopen で connected になる', async () => {
+  it('becomes connected after onopen', async () => {
     const { result } = renderHook(() => useWebSocket(defaultProps));
 
     await act(async () => {
@@ -133,7 +133,7 @@ describe('useWebSocket', () => {
     expect(result.current.connectionStatus).toBe('connected');
   });
 
-  it('disconnect で WebSocket を閉じる', async () => {
+  it('closes WebSocket on disconnect', async () => {
     const { result } = renderHook(() => useWebSocket(defaultProps));
 
     await act(async () => {
@@ -147,7 +147,7 @@ describe('useWebSocket', () => {
     expect(result.current.connectionStatus).toBe('disconnected');
   });
 
-  it('send でメッセージを送信', async () => {
+  it('sends messages via send', async () => {
     const { result } = renderHook(() => useWebSocket(defaultProps));
 
     await act(async () => {
@@ -166,7 +166,7 @@ describe('useWebSocket', () => {
     );
   });
 
-  it('受信した audio メッセージを onAudio で通知', async () => {
+  it('invokes onAudio for audio messages', async () => {
     const onAudio = vi.fn();
     const { result } = renderHook(() => useWebSocket({ ...defaultProps, onAudio }));
 
@@ -184,7 +184,7 @@ describe('useWebSocket', () => {
     expect(onAudio).toHaveBeenCalledWith('AQID');
   });
 
-  it('受信した transcript メッセージを onTranscript で通知', async () => {
+  it('invokes onTranscript for transcript messages', async () => {
     const onTranscript = vi.fn();
     const { result } = renderHook(() => useWebSocket({ ...defaultProps, onTranscript }));
 
@@ -204,7 +204,7 @@ describe('useWebSocket', () => {
     expect(onTranscript).toHaveBeenCalledWith('assistant', 'hello', true);
   });
 
-  it('受信した interruption メッセージを onInterruption で通知', async () => {
+  it('invokes onInterruption for interruption messages', async () => {
     const onInterruption = vi.fn();
     const { result } = renderHook(() => useWebSocket({ ...defaultProps, onInterruption }));
 

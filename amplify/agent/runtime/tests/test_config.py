@@ -1,4 +1,4 @@
-"""config.py のユニットテスト"""
+"""Unit tests for config.py."""
 
 import os
 from unittest.mock import patch
@@ -7,14 +7,14 @@ from config import get_model, SYSTEM_PROMPT
 
 
 class TestSystemPrompt:
-    def test_prompt_is_japanese(self):
-        assert "日本語" in SYSTEM_PROMPT
+    def test_prompt_mentions_japanese_learning(self):
+        assert "Japanese" in SYSTEM_PROMPT
 
     def test_prompt_mentions_tools(self):
-        assert "ツール" in SYSTEM_PROMPT
+        assert "## Tools" in SYSTEM_PROMPT
 
-    def test_prompt_mentions_stop(self):
-        assert "stop_conversation" in SYSTEM_PROMPT
+    def test_prompt_mentions_aws_news_tool(self):
+        assert "rss" in SYSTEM_PROMPT.lower()
 
 
 class TestGetModel:

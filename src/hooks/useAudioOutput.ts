@@ -12,11 +12,11 @@ function base64ToInt16(base64: string): Int16Array {
 }
 
 /**
- * AudioBufferSourceNode スケジューリング方式の音声再生。
+ * Play streamed audio by scheduling AudioBufferSourceNode chunks.
  *
- * 各チャンクを AudioBufferSourceNode として正確な再生時刻にスケジュールし、
- * Web Audio API に連続再生とリサンプリング（16kHz→ネイティブ）を任せる。
- * リングバッファ方式と異なり、ネットワークジッターに強い。
+ * Each chunk is scheduled at the correct playback time; the Web Audio API handles
+ * gapless playback and resampling from the source rate to the device rate.
+ * More resilient to network jitter than a simple ring buffer.
  */
 export function useAudioOutput() {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -42,7 +42,7 @@ export function useAudioOutput() {
 
     const int16Data = base64ToInt16(base64);
 
-    // 16kHz の AudioBuffer を生成（再生時に AudioContext が自動リサンプリング）
+    // Buffer at SOURCE_SAMPLE_RATE; AudioContext resamples on playback
     const audioBuffer = ctx.createBuffer(1, int16Data.length, SOURCE_SAMPLE_RATE);
     const channelData = audioBuffer.getChannelData(0);
     for (let i = 0; i < int16Data.length; i++) {
@@ -53,7 +53,7 @@ export function useAudioOutput() {
     source.buffer = audioBuffer;
     source.connect(ctx.destination);
 
-    // 前のチャンクの直後、または今すぐのどちらか遅い方からスケジュール
+    // Start after the previous chunk ends, or now—whichever is later
     const now = ctx.currentTime;
     const startTime = Math.max(nextPlayTimeRef.current, now);
     source.start(startTime);

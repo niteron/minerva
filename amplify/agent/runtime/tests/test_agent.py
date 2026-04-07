@@ -1,4 +1,4 @@
-"""agent.py の WebSocketBidiInput/Output ユニットテスト"""
+"""Unit tests for WebSocketBidiInput and WebSocketBidiOutput in agent.py."""
 
 import asyncio
 import json
@@ -76,7 +76,7 @@ class TestWebSocketBidiOutput:
         event = {
             "type": "bidi_transcript_stream",
             "role": "assistant",
-            "text": "こんにちは",
+            "text": "Hello",
             "is_final": True,
         }
         await output(event)
@@ -84,7 +84,7 @@ class TestWebSocketBidiOutput:
         sent = ws.send_json.call_args[0][0]
         assert sent["type"] == "transcript"
         assert sent["role"] == "assistant"
-        assert sent["text"] == "こんにちは"
+        assert sent["text"] == "Hello"
         assert sent["is_final"] is True
 
     @pytest.mark.asyncio

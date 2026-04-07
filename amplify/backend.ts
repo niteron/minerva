@@ -12,10 +12,10 @@ const backend = defineBackend({
   auth,
 });
 
-// AgentCore スタック
+// AgentCore stack
 const agentCoreStack = backend.createStack('AgentCoreStack');
 
-// nameSuffix の決定
+// Resolve name suffix (sandbox vs branch)
 let nameSuffix: string;
 if (isSandbox) {
   const backendName = agentCoreStack.node.tryGetContext('amplify-backend-name') as string;
@@ -25,7 +25,7 @@ if (isSandbox) {
   nameSuffix = branchName.replace(/[^a-zA-Z0-9_]/g, '_');
 }
 
-// Voice Agent 作成
+// Voice agent runtime
 const { runtime } = createVoiceAgent({
   stack: agentCoreStack,
   userPool: backend.auth.resources.userPool,
@@ -33,7 +33,7 @@ const { runtime } = createVoiceAgent({
   nameSuffix,
 });
 
-// Cognito 認証済みロールに AgentCore WebSocket 呼び出し権限を付与
+// Allow the Cognito authenticated role to open the AgentCore WebSocket stream
 const authenticatedRole = backend.auth.resources.authenticatedUserIamRole;
 authenticatedRole.addToPrincipalPolicy(new iam.PolicyStatement({
   actions: ['bedrock-agentcore:InvokeAgentRuntimeWithWebSocketStream'],
@@ -43,7 +43,7 @@ authenticatedRole.addToPrincipalPolicy(new iam.PolicyStatement({
   ],
 }));
 
-// フロントエンドにランタイム情報を渡す
+// Expose runtime metadata to the frontend
 backend.addOutput({
   custom: {
     agentRuntimeArn: runtime.agentRuntimeArn,
@@ -51,7 +51,7 @@ backend.addOutput({
   },
 });
 
-// Sandbox: テストユーザー自動作成
+// Sandbox: optional test user provisioning
 if (isSandbox) {
   const testUserEmail = process.env.TEST_USER_EMAIL;
   const testUserPassword = process.env.TEST_USER_PASSWORD;

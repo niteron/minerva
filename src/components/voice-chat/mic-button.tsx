@@ -7,7 +7,7 @@ interface MicButtonProps {
 export function MicButton({ isRecording, isConnected, onToggle }: MicButtonProps) {
   return (
     <div className="relative">
-      {/* パルスリング（録音中） */}
+      {/* Pulse ring while recording */}
       {isRecording && (
         <div className="absolute inset-0 rounded-full bg-red-400/40 animate-pulse-ring" />
       )}
@@ -25,7 +25,7 @@ export function MicButton({ isRecording, isConnected, onToggle }: MicButtonProps
           }
           ${!isConnected && !isRecording ? 'animate-breathe' : ''}
         `}
-        aria-label={isRecording ? 'マイクをオフにする' : 'マイクをオンにする'}
+        aria-label={isRecording ? 'Turn microphone off' : 'Turn microphone on'}
       >
         {isRecording ? (
           // Stop icon

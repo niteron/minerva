@@ -1,4 +1,4 @@
-"""ツールのユニットテスト"""
+"""Unit tests for agent tools."""
 
 import re
 from datetime import datetime, timedelta, timezone
@@ -14,13 +14,24 @@ class TestGetCurrentTime:
 
     def test_format_includes_year_month_day(self):
         result = get_current_time()
-        # 「2026年2月16日(日) 15:30 JST」のような形式
-        assert re.search(r"\d{4}年\d{1,2}月\d{1,2}日", result)
+        # e.g. "Monday, April 7, 2026 15:30 JST"
+        assert re.search(
+            r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\b \d{1,2}, \d{4}",
+            result,
+        )
 
     def test_format_includes_weekday(self):
         result = get_current_time()
-        weekdays = ["月", "火", "水", "木", "金", "土", "日"]
-        assert any(f"({w})" in result for w in weekdays)
+        weekdays = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+        assert any(w in result for w in weekdays)
 
     def test_time_is_close_to_now(self):
         result = get_current_time()
@@ -60,17 +71,17 @@ class TestSimpleCalculator:
 
     def test_invalid_characters_rejected(self):
         result = simple_calculator("import os")
-        assert "エラー" in result
+        assert "Error" in result
 
     def test_semicolon_rejected(self):
         result = simple_calculator("1; print('x')")
-        assert "エラー" in result
+        assert "Error" in result
 
     def test_division_by_zero(self):
         result = simple_calculator("1 / 0")
-        assert "計算エラー" in result
+        assert "Calculation error" in result
 
     def test_empty_expression(self):
         result = simple_calculator("")
-        # 空文字列はevalでSyntaxError
-        assert "計算エラー" in result
+        # Empty string raises SyntaxError from eval
+        assert "Calculation error" in result

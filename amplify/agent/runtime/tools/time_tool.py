@@ -1,19 +1,35 @@
-"""現在時刻取得ツール"""
+"""Current time tool (Japan Standard Time)."""
 
 from datetime import datetime, timedelta, timezone
 
 from strands import tool
 
+_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+_MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+]
+
 
 @tool
 def get_current_time() -> str:
-    """現在の日本時間を取得します。
+    """Return the current date and time in Japan Standard Time (JST).
 
     Returns:
-        現在の日本時間の文字列
+        Human-readable JST timestamp string.
     """
     jst = timezone(timedelta(hours=9))
     now = datetime.now(jst)
-    weekday_ja = ["月", "火", "水", "木", "金", "土", "日"]
-    weekday = weekday_ja[now.weekday()]
-    return f"{now.year}年{now.month}月{now.day}日({weekday}) {now.strftime('%H:%M')} JST"
+    weekday = _WEEKDAYS[now.weekday()]
+    month = _MONTHS[now.month - 1]
+    return f"{weekday}, {month} {now.day}, {now.year} {now.strftime('%H:%M')} JST"

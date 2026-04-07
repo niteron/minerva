@@ -1,9 +1,9 @@
 import type { ConnectionStatus as Status } from './types.ts';
 
 const statusConfig = {
-  disconnected: { label: '未接続', color: 'bg-gray-300' },
-  connecting: { label: '接続中...', color: 'bg-amber-400 animate-pulse' },
-  connected: { label: '接続済み', color: 'bg-emerald-500' },
+  disconnected: { label: 'Disconnected', color: 'bg-gray-300' },
+  connecting: { label: 'Connecting…', color: 'bg-amber-400 animate-pulse' },
+  connected: { label: 'Connected', color: 'bg-emerald-500' },
 } as const;
 
 export function ConnectionStatus({ status }: { status: Status }) {

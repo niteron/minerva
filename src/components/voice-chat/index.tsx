@@ -2,9 +2,9 @@ import { useState, useCallback, useEffect } from 'react';
 import { useWebSocket } from '../../hooks/useWebSocket.ts';
 import { useAudioInput } from '../../hooks/useAudioInput.ts';
 import { useAudioOutput } from '../../hooks/useAudioOutput.ts';
-import { ConnectionStatus } from './ConnectionStatus.tsx';
-import { MicButton } from './MicButton.tsx';
-import { TranscriptView } from './TranscriptView.tsx';
+import { ConnectionStatus } from './connection-status.tsx';
+import { MicButton } from './mic-button.tsx';
+import { TranscriptView } from './transcript-view.tsx';
 import type { TranscriptEntry } from './types.ts';
 
 export function VoiceChat() {
@@ -18,17 +18,17 @@ export function VoiceChat() {
   const handleTranscript = useCallback((role: string, text: string, isFinal: boolean) => {
     if (role === 'assistant') {
       if (!isFinal) {
-        // 非finalはインジケーターのみ表示（テキストは出さない）
+        // Non-final: show speaking indicator only (no assistant text yet)
         setIsAssistantSpeaking(true);
         return;
       }
-      // final → インジケーターを消して履歴に追加
+      // Final: clear indicator and append to history
       setIsAssistantSpeaking(false);
     }
 
     setTranscripts((prev) => {
       const lastIdx = prev.length - 1;
-      // 同じロールの非finalエントリがあれば上書き（ユーザーのリアルタイム表示用）
+      // Overwrite in-progress entry for the same role (live user transcript)
       if (lastIdx >= 0 && prev[lastIdx].role === role && !prev[lastIdx].isFinal) {
         const updated = [...prev];
         updated[lastIdx] = { ...updated[lastIdx], text, isFinal };
@@ -68,14 +68,14 @@ export function VoiceChat() {
     ),
   });
 
-  // 接続時に AudioOutput を初期化
+  // Initialize audio output when connected
   useEffect(() => {
     if (ws.connectionStatus === 'connected') {
       audioOutput.init();
     }
   }, [ws.connectionStatus, audioOutput]);
 
-  // 切断時にマイクを停止
+  // Stop the mic when disconnected
   useEffect(() => {
     if (ws.connectionStatus === 'disconnected' && audioInput.isRecording) {
       audioInput.stopRecording();
@@ -107,7 +107,7 @@ export function VoiceChat() {
 
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto px-4">
-      {/* ステータスバー */}
+      {/* Status bar */}
       <div className="flex items-center justify-between py-4">
         <ConnectionStatus status={ws.connectionStatus} />
         <button
@@ -123,21 +123,21 @@ export function VoiceChat() {
           `}
           disabled={ws.connectionStatus === 'connecting'}
         >
-          {ws.connectionStatus === 'disconnected' ? '接続' : ws.connectionStatus === 'connecting' ? '接続中...' : '切断'}
+          {ws.connectionStatus === 'disconnected' ? 'Connect' : ws.connectionStatus === 'connecting' ? 'Connecting…' : 'Disconnect'}
         </button>
       </div>
 
-      {/* エラー表示 */}
+      {/* Error banner */}
       {error && (
         <div className="mx-0 mt-2 px-4 py-2 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
           {error}
         </div>
       )}
 
-      {/* トランスクリプト */}
+      {/* Transcript */}
       <TranscriptView entries={transcripts} isAssistantSpeaking={isAssistantSpeaking} activeTool={activeTool} />
 
-      {/* マイクボタン */}
+      {/* Mic button */}
       <div className="flex justify-center py-8">
         <MicButton
           isRecording={audioInput.isRecording}

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MicButton } from './MicButton.tsx';
+import { MicButton } from './mic-button.tsx';
 
 describe('MicButton', () => {
-  it('接続済みでクリック可能', () => {
+  it('is clickable when connected', () => {
     const onToggle = vi.fn();
     render(<MicButton isRecording={false} isConnected={true} onToggle={onToggle} />);
 
@@ -14,7 +14,7 @@ describe('MicButton', () => {
     expect(onToggle).toHaveBeenCalledOnce();
   });
 
-  it('未接続でクリック不可', () => {
+  it('is disabled when disconnected', () => {
     const onToggle = vi.fn();
     render(<MicButton isRecording={false} isConnected={false} onToggle={onToggle} />);
 
@@ -22,13 +22,13 @@ describe('MicButton', () => {
     expect(button).toBeDisabled();
   });
 
-  it('録音中はaria-labelが変わる', () => {
+  it('uses turn-off label while recording', () => {
     render(<MicButton isRecording={true} isConnected={true} onToggle={() => {}} />);
-    expect(screen.getByLabelText('マイクをオフにする')).toBeInTheDocument();
+    expect(screen.getByLabelText('Turn microphone off')).toBeInTheDocument();
   });
 
-  it('停止中はaria-labelが変わる', () => {
+  it('uses turn-on label when not recording', () => {
     render(<MicButton isRecording={false} isConnected={true} onToggle={() => {}} />);
-    expect(screen.getByLabelText('マイクをオンにする')).toBeInTheDocument();
+    expect(screen.getByLabelText('Turn microphone on')).toBeInTheDocument();
   });
 });

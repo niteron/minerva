@@ -3,29 +3,29 @@ import { renderHook, act } from '@testing-library/react';
 import { useAudioOutput } from './useAudioOutput.ts';
 
 describe('useAudioOutput', () => {
-  it('init で AudioContext を作成', async () => {
+  it('creates AudioContext on init', async () => {
     const { result } = renderHook(() => useAudioOutput());
 
     await act(async () => {
       await result.current.init();
     });
 
-    // 2回目の init は何もしない（冪等）
+    // Second init is a no-op (idempotent)
     await act(async () => {
       await result.current.init();
     });
   });
 
-  it('init 前の playAudio は安全にスキップされる', () => {
+  it('skips playAudio safely before init', () => {
     const { result } = renderHook(() => useAudioOutput());
 
-    // audioContext が null なのでエラーにならない
+    // No AudioContext yet — should not throw
     act(() => {
       result.current.playAudio('AAAA');
     });
   });
 
-  it('init 前の clearBuffer は安全にスキップされる', () => {
+  it('skips clearBuffer safely before init', () => {
     const { result } = renderHook(() => useAudioOutput());
 
     act(() => {
@@ -33,7 +33,7 @@ describe('useAudioOutput', () => {
     });
   });
 
-  it('cleanup を呼べる', async () => {
+  it('allows cleanup', async () => {
     const { result } = renderHook(() => useAudioOutput());
 
     await act(async () => {

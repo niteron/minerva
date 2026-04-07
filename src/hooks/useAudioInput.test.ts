@@ -3,14 +3,14 @@ import { renderHook, act } from '@testing-library/react';
 import { useAudioInput } from './useAudioInput.ts';
 
 describe('useAudioInput', () => {
-  it('初期状態は録音していない', () => {
+  it('starts not recording', () => {
     const onAudioChunk = vi.fn();
     const { result } = renderHook(() => useAudioInput({ onAudioChunk }));
 
     expect(result.current.isRecording).toBe(false);
   });
 
-  it('startRecording で isRecording が true になる', async () => {
+  it('sets isRecording true after startRecording', async () => {
     const onAudioChunk = vi.fn();
     const { result } = renderHook(() => useAudioInput({ onAudioChunk }));
 
@@ -21,7 +21,7 @@ describe('useAudioInput', () => {
     expect(result.current.isRecording).toBe(true);
   });
 
-  it('stopRecording で isRecording が false に戻る', async () => {
+  it('sets isRecording false after stopRecording', async () => {
     const onAudioChunk = vi.fn();
     const { result } = renderHook(() => useAudioInput({ onAudioChunk }));
 
