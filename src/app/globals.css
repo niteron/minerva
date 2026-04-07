@@ -10,7 +10,27 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Amplify Authenticator */
+[data-amplify-authenticator] [data-amplify-router] {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
+  overflow: hidden;
+}
+
+[data-amplify-authenticator] .amplify-button--primary {
+  border: none;
+  border-radius: 0.75rem;
+}
+
+
+[data-amplify-authenticator] {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Amplify Authenticator 
 [data-amplify-authenticator] {
   min-height: 100vh;
   display: flex;
@@ -44,6 +64,7 @@ html, body {
   color: #3b82f6;
   border-color: #3b82f6;
 }
+*/
 
 /* パルスアニメーション（マイクボタン用） */
 @keyframes pulse-ring {

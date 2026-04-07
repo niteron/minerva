@@ -1,12 +1,23 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
-import type { Agent } from '@/lib/agents';
 import { VoiceChat } from '@/components/voice-chat';
 
-export function AgentCallPage({ agent }: { agent: Agent }) {
+type AgentSessionGateProps = {
+  runtimeArn?: string;
+  agentName?: string;
+  agentSubtitle?: string;
+  agentInitial?: string;
+};
+
+export function AgentSessionGate({
+  runtimeArn,
+  agentName,
+  agentSubtitle,
+  agentInitial,
+}: AgentSessionGateProps) {
   const [sessionReady, setSessionReady] = useState(false);
 
   useEffect(() => {
@@ -15,7 +26,7 @@ export function AgentCallPage({ agent }: { agent: Agent }) {
       try {
         await fetchAuthSession();
       } catch {
-        /* VoiceChat connect will surface credential errors */
+        // VoiceChat connect surfaces credential errors if needed.
       } finally {
         if (!cancelled) setSessionReady(true);
       }
@@ -32,17 +43,17 @@ export function AgentCallPage({ agent }: { agent: Agent }) {
           className="size-8 animate-spin rounded-full border-2 border-white/20 border-t-emerald-400"
           aria-hidden
         />
-        <p className="text-slate-400 text-sm">Preparing legal assessment session…</p>
+        <p className="text-slate-400 text-sm">Preparing legal assessment session...</p>
       </div>
     );
   }
 
   return (
     <VoiceChat
-      runtimeArn={agent.runtimeArn}
-      agentName={agent.name}
-      agentSubtitle={agent.subtitle}
-      agentInitial={agent.initial}
+      runtimeArn={runtimeArn}
+      agentName={agentName}
+      agentSubtitle={agentSubtitle}
+      agentInitial={agentInitial}
     />
   );
 }

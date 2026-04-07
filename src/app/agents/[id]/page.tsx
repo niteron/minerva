@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { getAgentById } from '@/lib/agents';
-import { AgentCallPage } from '@/views/agent-call-page';
+import { AgentSessionGate } from '../../../components/agent-session-gate';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -13,5 +13,13 @@ export default async function Page(props: Props) {
   if (!agent) {
     notFound();
   }
-  return <AgentCallPage agent={agent} />;
+
+  return (
+    <AgentSessionGate
+      runtimeArn={agent.runtimeArn}
+      agentName={agent.name}
+      agentSubtitle={agent.subtitle}
+      agentInitial={agent.initial}
+    />
+  );
 }

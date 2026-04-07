@@ -1,44 +1,27 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { Amplify } from 'aws-amplify';
-import { I18n } from 'aws-amplify/utils';
+import type { ThemeProviderProps } from "next-themes";
+
+import * as React from "react";
 import { Authenticator } from '@aws-amplify/ui-react';
-import { translations } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
-import outputs from '../../amplify_outputs.json';
-import { AppShell } from '@/components/layout/app-shell';
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+export interface ProvidersProps {
+  children: React.ReactNode;
+  themeProps?: ThemeProviderProps;
+}
 
-const authComponents = {
-  Header() {
-    return (
-      <Card className="border-0 bg-transparent shadow-none">
-        <CardHeader className="pb-6 text-center">
-          <CardTitle>Legal Assessment Agent</CardTitle>
-          <CardDescription>Nova Legal AI for legal issue assessment and intake</CardDescription>
-        </CardHeader>
-      </Card>
-    );
-  },
-};
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    Amplify.configure(outputs);
-    I18n.putVocabularies(translations);
-    I18n.setLanguage('en');
-  }, []);
-
+export function Providers({ children, themeProps }: ProvidersProps) {
   return (
-    <Authenticator components={authComponents}>
-      {({ signOut }) => <AppShell signOut={signOut}>{children}</AppShell>}
-    </Authenticator>
+    <Authenticator.Provider>
+      <NextThemesProvider {...themeProps}>
+        <TooltipProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </TooltipProvider>
+      </NextThemesProvider>
+    </Authenticator.Provider>
   );
 }

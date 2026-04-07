@@ -15,23 +15,13 @@ const defaultArn =
 
 export const AGENTS: Agent[] = [
   {
-    id: 'legal-assessment',
-    name: 'Nova Legal',
-    description:
-      'Guides users through legal issue assessment with deep follow-up questions, risk spotting, and practical preparation steps.',
-    subtitle: 'Legal assessment agent',
+    id: 'assessment',
+    name: 'Nova',
+    description: 'Guides users through issue assessment with deep follow-up questions, risk spotting, and practical preparation steps.',
+    subtitle: 'Assessment Specialist',
     initial: 'N',
     runtimeArn: defaultArn,
-  },
-  {
-    id: 'legal-intake',
-    name: 'Nova Intake',
-    description:
-      'Runs structured legal intake: timeline capture, evidence checklist, and attorney-ready case summary.',
-    subtitle: 'Legal intake specialist',
-    initial: 'I',
-    runtimeArn: defaultArn,
-  },
+  }
 ];
 
 export function getAgentById(id: string): Agent | undefined {
