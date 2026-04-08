@@ -144,7 +144,6 @@ export function AgentSession({
         ) : null}
       </div>
 
-      {/* Call status — read-only, not control buttons */}
       {isConnected ? (
         <div className="flex flex-wrap items-center justify-center gap-2">
           {isModelThinking ? (
@@ -167,7 +166,6 @@ export function AgentSession({
         </div>
       ) : null}
 
-      {/* Phone-style control bar */}
       <div className="flex flex-wrap items-center justify-center gap-2">
         {!isConnected && !isConnecting ? (
           <Tooltip>
