@@ -135,7 +135,7 @@ export function AgentSession({
 
   return (
     <div className="flex size-full flex-col items-center justify-center gap-6 px-4">
-      <Persona className="size-64" state={currentState} variant="obsidian" />
+      <Persona className="size-64" state={currentState} variant="opal" />
       <div className="text-center">
         <p className="text-sm font-medium">{agentName}</p>
         <p className="text-xs text-muted-foreground">{agentSubtitle}</p>

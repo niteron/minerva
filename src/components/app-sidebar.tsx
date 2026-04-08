@@ -15,7 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon } from "lucide-react"
+import { TerminalSquareIcon, BotIcon, BotMessageSquareIcon, BookOpenIcon, Settings2Icon, LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon } from "lucide-react"
 
 const data = {
   navMain: [
@@ -28,10 +28,6 @@ const data = {
       ),
       isActive: true,
       items: [
-        {
-          title: "Agents",
-          url: "/agents",
-        },
         {
           title: "History",
           url: "#",
@@ -47,26 +43,12 @@ const data = {
       ],
     },
     {
-      title: "Models",
-      url: "#",
+      title: "Agents",
+      url: "/agents",
       icon: (
-        <BotIcon
+        <BotMessageSquareIcon
         />
       ),
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Documentation",

@@ -1,32 +1,14 @@
 'use client';
-import Link from 'next/link';
+
 import { AGENTS } from '@/lib/agents';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { AgentCard } from '@/components/agent-card';
 
 export default function AgentsPage() {
   return (
-    <ul className="p-5 grid gap-4 sm:grid-cols-2">
+    <ul className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
       {AGENTS.map((agent) => (
-        <li key={agent.id}>
-          <Card>
-            <CardHeader>
-              <CardTitle>{agent.name}</CardTitle>
-              <p>{agent.subtitle}</p>
-              <CardDescription>{agent.description}</CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Button asChild>
-                <Link href={`/agents/${agent.id}`}>Launch</Link>
-              </Button>
-            </CardFooter>
-          </Card>
+        <li key={agent.id} className="flex min-h-0">
+          <AgentCard agent={agent} />
         </li>
       ))}
     </ul>
