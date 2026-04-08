@@ -168,12 +168,7 @@ export function AgentSession({
       ) : null}
 
       {/* Phone-style control bar */}
-      <div
-        className={cn(
-          "flex w-full max-w-sm items-center justify-center gap-3 rounded-2xl border bg-card/95 px-5 py-4 shadow-lg ring-1 ring-border backdrop-blur-sm",
-          "sm:gap-6 sm:px-8 sm:py-5"
-        )}
-      >
+      <div className="flex flex-wrap items-center justify-center gap-2">
         {!isConnected && !isConnecting ? (
           <Tooltip>
             <TooltipTrigger asChild>
