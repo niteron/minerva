@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BrainIcon,
+  MessageSquareTextIcon,
   Loader2Icon,
   MegaphoneIcon,
   MicIcon,
@@ -18,6 +19,25 @@ import { useAudioOutput } from "@/hooks/useAudioOutput";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { Button } from "@/components/ui/button";
 import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from "@/components/ai-elements/message";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -31,6 +51,13 @@ type AgentSessionGateProps = {
   agentInitial?: string;
 };
 
+type TranscriptMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  isFinal: boolean;
+};
+
 export function AgentSession({
   runtimeArn,
   agentName = "Nova Legal",
@@ -40,10 +67,38 @@ export function AgentSession({
   const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false);
   const [isModelThinking, setIsModelThinking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [transcriptMessages, setTranscriptMessages] = useState<TranscriptMessage[]>([]);
   const audioOutput = useAudioOutput();
 
   const handleTranscript = useCallback(
-    (role: string, _text: string, isFinal: boolean) => {
+    (role: string, text: string, isFinal: boolean) => {
+      if (role === "user" || role === "assistant") {
+        setTranscriptMessages((prev) => {
+          const lastMessage = prev.at(-1);
+          const canUpdateLast =
+            lastMessage &&
+            lastMessage.role === role &&
+            !lastMessage.isFinal;
+
+          if (canUpdateLast) {
+            return [
+              ...prev.slice(0, -1),
+              { ...lastMessage, text, isFinal },
+            ];
+          }
+
+          return [
+            ...prev,
+            {
+              id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${prev.length}`,
+              role,
+              text,
+              isFinal,
+            },
+          ];
+        });
+      }
+
       if (role !== "assistant") return;
       if (!isFinal) {
         setIsModelThinking(false);
@@ -230,6 +285,51 @@ export function AgentSession({
               aria-hidden
             />
 
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="outline"
+                  className="size-14 rounded-full shadow-sm sm:size-16"
+                  aria-label="Transcript"
+                >
+                  <MessageSquareTextIcon className="size-7 sm:size-8" strokeWidth={2} aria-hidden />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="flex h-[70vh] max-w-3xl flex-col gap-4 p-0">
+                <DialogHeader className="px-6 pt-6">
+                  <DialogTitle>Conversation Transcript</DialogTitle>
+                  <DialogDescription>
+                    Live transcript of your conversation with {agentName}.
+                  </DialogDescription>
+                </DialogHeader>
+                <Conversation className="min-h-0 px-2 pb-2">
+                  <ConversationContent className="gap-4 px-4 pb-4">
+                    {transcriptMessages.length === 0 ? (
+                      <ConversationEmptyState
+                        title="No transcript yet"
+                        description="Start speaking after connecting to see user and assistant messages here."
+                      />
+                    ) : (
+                      transcriptMessages.map((message) => (
+                        <Message key={message.id} from={message.role}>
+                          <MessageContent>
+                            <MessageResponse>{message.text}</MessageResponse>
+                          </MessageContent>
+                        </Message>
+                      ))
+                    )}
+                  </ConversationContent>
+                  <ConversationScrollButton />
+                </Conversation>
+              </DialogContent>
+            </Dialog>
+
+            <div
+              className="h-10 w-px shrink-0 bg-border sm:h-12"
+              aria-hidden
+            />
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
