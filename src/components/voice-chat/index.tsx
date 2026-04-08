@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useMemo } from "react";
-import Link from "next/link";
 import {
-  ArrowLeft,
   Mic,
   MicOff,
   Phone,
@@ -24,7 +22,6 @@ import {
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Persona, type PersonaState } from "@/components/ai-elements/persona";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +61,7 @@ export type VoiceChatProps = {
 export function VoiceChat({
   runtimeArn,
   agentName = "Nova Legal",
-  agentSubtitle = "Legal assessment agent",
+  agentSubtitle = "Legal Assessment Agent",
   agentInitial = "N",
 }: VoiceChatProps = {}) {
   const [transcripts, setTranscripts] = useState<TranscriptEntry[]>([]);
@@ -213,36 +210,6 @@ export function VoiceChat({
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] w-full flex-col bg-muted/40">
-      {/* Meeting title bar (Teams-style) */}
-      <div className="flex shrink-0 items-center justify-between gap-3 border-b bg-card px-3 py-2.5 sm:px-4">
-        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-          <Button variant="ghost" size="icon-sm" className="shrink-0" asChild>
-            <Link href="/agents" aria-label="Back to agents">
-              <ArrowLeft className="size-4" />
-            </Link>
-          </Button>
-          <div className="min-w-0">
-            <h1 className="truncate font-semibold text-foreground text-sm leading-tight sm:text-base">
-              {agentName}
-            </h1>
-            <p className="truncate text-muted-foreground text-xs">{agentSubtitle}</p>
-          </div>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {isConnected && (
-            <span className="hidden font-mono text-muted-foreground text-xs tabular-nums sm:inline">
-              {formatCallDuration(callElapsedSec)}
-            </span>
-          )}
-          <Badge
-            variant={isConnected ? "default" : "secondary"}
-            className="max-w-[9rem] truncate text-xs"
-          >
-            {connectionLabel(status)}
-          </Badge>
-        </div>
-      </div>
-
       <div className="flex min-h-0 min-h-[420px] flex-1 flex-col lg:flex-row">
         {/* Main stage */}
         <div className="relative flex min-h-[320px] min-w-0 flex-1 flex-col bg-card text-card-foreground lg:min-h-0">
@@ -294,7 +261,7 @@ export function VoiceChat({
           <div className="flex shrink-0 items-center gap-2 border-b px-3 py-2.5">
             <MessageSquareText className="size-4 text-muted-foreground" aria-hidden />
             <div className="min-w-0">
-              <p className="font-medium text-sm">Meeting chat</p>
+              <p className="font-medium text-sm">Conversation</p>
               <p className="text-muted-foreground text-xs">Messages in this session</p>
             </div>
           </div>
@@ -409,7 +376,7 @@ export function VoiceChat({
               className="size-14 rounded-full bg-emerald-600 text-white hover:bg-emerald-500 sm:size-16"
               disabled={status === "connecting"}
               onClick={handleConnect}
-              aria-label={status === "connecting" ? "Connecting" : "Join meeting"}
+              aria-label={status === "connecting" ? "Connecting" : "Join Meeting"}
             >
               {status === "connecting" ? (
                 <span

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { getAgentById } from '@/lib/agents';
-import { AgentSessionGate } from '../../../components/agent-session-gate';
+import { AgentSession } from '../../../components/agent-session';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -15,7 +15,7 @@ export default async function Page(props: Props) {
   }
 
   return (
-    <AgentSessionGate
+    <AgentSession
       runtimeArn={agent.runtimeArn}
       agentName={agent.name}
       agentSubtitle={agent.subtitle}

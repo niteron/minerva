@@ -29,6 +29,10 @@ const data = {
       isActive: true,
       items: [
         {
+          title: "Agents",
+          url: "/agents",
+        },
+        {
           title: "History",
           url: "#",
         },
